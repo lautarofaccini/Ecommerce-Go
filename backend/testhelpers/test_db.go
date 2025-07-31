@@ -2,14 +2,13 @@
 package testhelpers
 
 import (
+	"github.com/lautarofaccini/ecommerce-go/internal/testdb"
 	"github.com/lautarofaccini/ecommerce-go/models"
-	"gorm.io/driver/sqlite"
-	"gorm.io/gorm"
 )
 
 // ConnectTest inicializa DB en memoria para tests
 func ConnectTest() error {
-	db, err := gorm.Open(sqlite.Open(":memory:"), &gorm.Config{})
+	db, err := testdb.Init()
 	if err != nil {
 		return err
 	}

@@ -25,14 +25,16 @@ func SetupRouter() *gin.Engine {
 func main() {
 	_ = godotenv.Load()
 
-	dbURL := os.Getenv("DATABASE_URL")
-	if dbURL == "" {
+	dataSourceName := os.Getenv("DATABASE_URL")
+	if dataSourceName == "" {
 		log.Fatal("DATABASE_URL no está definida")
 	}
-	if err := models.Connect(dbURL); err != nil {
+	if err := models.Connect(dataSourceName); err != nil {
 		panic(err)
 	}
 
 	router := SetupRouter()
-	router.Run(":8080")
+	if err := router.Run(":8080"); err != nil {
+		log.Fatalf("No se pudo iniciar el servidor: %v", err)
+	}
 }

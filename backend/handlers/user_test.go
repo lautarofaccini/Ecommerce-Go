@@ -1,4 +1,5 @@
 // backend/handlers/user_test.go
+// integration tests
 package handlers
 
 import (
