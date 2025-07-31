@@ -1,32 +1,38 @@
-// /backend/main.go
+// backend/main.go
 package main
 
 import (
-	"os"
 	"log"
-	"github.com/joho/godotenv"
+	"os"
+
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	"github.com/lautarofaccini/ecommerce-go/handlers"
 	"github.com/lautarofaccini/ecommerce-go/models"
 )
 
-func main (){
+func SetupRouter() *gin.Engine {
+	router := gin.Default()
+	usersGroup := router.Group("/users")
+	{
+		usersGroup.GET("", handlers.GetUsers)
+		usersGroup.POST("", handlers.CreateUser)
+		// PUT, DELETE, GET("/:id")…
+	}
+	return router
+}
+
+func main() {
 	_ = godotenv.Load()
 
-	dsn := os.Getenv("DATABASE_URL")
-	if dsn == "" {
+	dbURL := os.Getenv("DATABASE_URL")
+	if dbURL == "" {
 		log.Fatal("DATABASE_URL no está definida")
 	}
-	if err := models.Connect(dsn); err != nil {
+	if err := models.Connect(dbURL); err != nil {
 		panic(err)
 	}
 
-	r := gin.Default()
-	users := r.Group("/users")
-	{
-		users.GET("", handlers.GetUsers)
-		users.POST("", handlers.CreateUser)
-		// PUT, DELETE, GET
-	}
-	r.Run(":8080")
+	router := SetupRouter()
+	router.Run(":8080")
 }
